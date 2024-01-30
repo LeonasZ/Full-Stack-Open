@@ -1,0 +1,98 @@
+  Exercise 0.4: New note diagram
+Create a similar diagram depicting the situation where the user creates a new note on the page https://studies.cs.helsinki.fi/exampleapp/notes by writing something into the text field and clicking the Save button.
+If necessary, show operations on the browser or on the server as comments on the diagram.
+The diagram does not have to be a sequence diagram. Any sensible way of presenting the events is fine.
+
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: the css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: the JavaScript file
+    deactivate server
+
+    Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
+    deactivate server
+
+    Note right of browser: The browser executes the callback function that renders the notes
+
+//submitting the form is done as an HTTP POST request to the address new_note.
+
+ browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+ Status code: 302 Found
+
+ // the server asks to the browser for a new HTTP GET in the location to the adress 'notes'. Then the browser reload the page that causes three HTTP request: 
+ // fetching the style sheet (main.css), the JavaScript code (main.js), and the raw data of the notes (data.json). (In the same way as it is written above).
+
+
+
+  Exercise 0.5: Single page app diagram
+Create a diagram depicting the situation where the user goes to the single-page app version of the notes app at https://studies.cs.helsinki.fi/exampleapp/spa.
+
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: the css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    activate server
+    server-->>browser: the JavaScript file
+    deactivate server
+Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server and also includes the functions to create and render new notes
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{content: "All work and no play makes Jack a dull boy", date: "2024-01-30T10:25:33.607Z"},… ]
+    deactivate server
+Note right of browser: The browser executes the callback function that renders the notes
+
+
+  Exercise 0.6: New note in Single page app diagram
+Create a diagram depicting the situation where the user creates a new note using the single-page version of the app.
+
+//Here we can notice that the browser sends only one request to the server
+
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    Status code: 201 Created
+
+//The POST request to the address new_note_spa contains the new note as JSON data
+//We have a payload: {content: "0.5 here we go", date: "2024-01-30T15:24:20.770Z"}
+
+//We can notice a new event handler to handle the form's submit event. The event handler immediately calls the method e.preventDefault() to prevent the default handling of form's submit. Then the event handler
+// creates a new note, adds it to the notes list with the command notes.push(note), rerenders the note list on the page and sends the new note to the server.
+//The code determines that the data is to be sent with an HTTP POST request and the data type is to be JSON. The data type is determined with a Content-type header. Then the data is sent as JSON string.
+    
+
+
+
+
+
+
